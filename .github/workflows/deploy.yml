@@ -1,9 +1,9 @@
-name: Image Conversion and Deployment
+name: Deploy Express App
 
 on:
   push:
     branches:
-      - main
+      - main # 푸시 이벤트가 main 브랜치에서 발생할 때 워크플로우 실행
 
 jobs:
   build:
@@ -13,13 +13,17 @@ jobs:
     - name: Checkout Repository
       uses: actions/checkout@v2
 
-    - name: Set up Node.js
+    - name: Setup Node.js
       uses: actions/setup-node@v2
       with:
         node-version: '14'
 
     - name: Install Dependencies
       run: npm install
+
+    - name: Build
+      run: npm run build # Express.js 애플리케이션 빌드 스크립트를 실행
+
 
     - name: Build and Convert Images
       run: |
@@ -31,6 +35,12 @@ jobs:
         # GitHub Pages에 배포하는 스크립트 실행
         npm run deploy
 
-    - name: Use the TEST_TOKEN secret
-      run: |
-        echo ${{ secrets.TEST_TOKEN }} # 시크릿 값 출력, 실제로는 여기에서 해당 시크릿을 사용하여 원하는 작업을 수행할 수 있습니다.
+    - name: Deploy to AWS Elastic Beanstalk
+      uses: einaregilsson/beanstalk-deploy@v17
+      with:
+        aws_access_key: ${{ secrets.AWS_ACCESS_KEY }}
+        aws_secret_key: ${{ secrets.AWS_SECRET_KEY }}
+        region: us-east-1 # AWS 리전 설정
+        application_name: your-application-name
+        environment_name: your-environment
+        github_token: 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 
