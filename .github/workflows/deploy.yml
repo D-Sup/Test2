@@ -17,12 +17,7 @@ jobs:
       uses: actions/setup-node@v2
       with:
         node-version: '14'
+        
+- name: Set Image Conversion Server URL
+  run: echo "IMAGE_CONVERT_URL=http://localhost:3000" >> $GITHUB_ENV
 
-    - name: Install Dependencies
-      run: npm install
-
-    - name: Build
-      run: npm run start
-
-    - name: Convert Images
-      run: npm run image-convert # 이미지 변환 스크립트 실행
