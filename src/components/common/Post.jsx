@@ -32,6 +32,7 @@ export default function Post({ post }) {
   const { openModal, ModalComponent } = useModalControl();
   const { openAlert, AlertComponent } = useAlertControl();
   const id = post.id || post._id;
+
 //   const observeImage = useRef(null)
 
 //   useEffect(() => {
@@ -49,6 +50,35 @@ export default function Post({ post }) {
 //     observeImage.current.src = imageUrl
 //     observer.unobserve(entry.target) // 함수가 실행될 때, 관찰을 끝내기.
 // }
+
+const [webPImage, setWebPImage] = useState(null);
+
+  useEffect(() => {
+    async function convertToWebP() {
+      try {
+        // 이미지 변환 요청
+        const response = await fetch(`/api/convert-to-webp?image=${post.image}`);
+        if (response.ok) {
+          // 변환된 이미지 데이터를 ArrayBuffer로 읽어옴
+          const webPImageData = await response.arrayBuffer();
+
+          // ArrayBuffer를 Blob으로 변환
+          const webPImageBlob = new Blob([webPImageData], { type: 'image/webp' });
+
+          // Blob URL 생성
+          const webPImageUrl = URL.createObjectURL(webPImageBlob);
+          console.log(webPImageUrl);
+          // 변환된 이미지 URL을 상태로 저장
+          setWebPImage(webPImageUrl);
+        }
+      } catch (error) {
+        console.error('이미지 변환 중 오류 발생:', error);
+      }
+    }
+
+      convertToWebP();
+  
+  }, []);
 
   const postLikeReq = async () => {
     await postLike(id);
@@ -98,7 +128,6 @@ export default function Post({ post }) {
       ${originalDate.getDate()}일`;
     return formattedDate
   }
-  const outputImagePath = 'imgs/converted.webp'; // 변환된 이미지 경로
   return (
     <>
       <PostStyle>
@@ -117,24 +146,15 @@ export default function Post({ post }) {
               {post.content?.length >= 180 && <button className="moreContentBtn" ></button>}
             </div>
             {contentMore && post.image && (
-
-// <picture>
-//   <source type="image/webp" srcset={post.image}/>
-//   <source type="image/jpeg" srcset={post.image}/>
-//   <source type="image/jpg" srcset={post.image}/>
-//   <source type="image/png" srcset={post.image}/>
-//   <img
-//     ref={observeImage}
-//     data-src={post.image} // 이미지 URL을 설정하세요
-//     // src={}
-//     alt={`${post.author.accountname}의 포스팅 이미지`}
-//     onError={(event) => {
-//       event.target.src = errorImg;
-//     }}
-//   />
-// </picture>
-<img src={outputImagePath} alt="" />
-
+              <picture>
+                <source type="image/webp" srcset={webPImage}/>
+                <source type="image/jpeg" srcset={webPImage}/>
+                <source type="image/jpg" srcset={webPImage}/>
+                <source type="image/png" srcset={webPImage}/>
+                <img
+                  src={webPImage}
+                />
+              </picture>
             )}
           </Link>
           <div className='likeCommentCount'>
