@@ -3,7 +3,7 @@ name: Deploy Express App
 on:
   push:
     branches:
-      - main # 푸시 이벤트가 main 브랜치에서 발생할 때 워크플로우 실행
+      - main
 
 jobs:
   build:
@@ -22,25 +22,7 @@ jobs:
       run: npm install
 
     - name: Build
-      run: npm run build # Express.js 애플리케이션 빌드 스크립트를 실행
+      run: npm run start
 
-
-    - name: Build and Convert Images
-      run: |
-        # 이미지 변환 스크립트 실행
-        npm run image-convert
-
-    - name: Deploy to GitHub Pages
-      run: |
-        # GitHub Pages에 배포하는 스크립트 실행
-        npm run deploy
-
-    - name: Deploy to AWS Elastic Beanstalk
-      uses: einaregilsson/beanstalk-deploy@v17
-      with:
-        aws_access_key: ${{ secrets.AWS_ACCESS_KEY }}
-        aws_secret_key: ${{ secrets.AWS_SECRET_KEY }}
-        region: us-east-1 # AWS 리전 설정
-        application_name: your-application-name
-        environment_name: your-environment
-        github_token: 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 
+    - name: Convert Images
+      run: npm run image-convert # 이미지 변환 스크립트 실행
