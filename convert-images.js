@@ -1,22 +1,37 @@
-// convert-images.js
 const express = require('express');
-const sharp = require('sharp'); // 이미지 변환을 위한 라이브러리
+const sharp = require('sharp');
+const axios = require('axios');
+
 const app = express();
 
-// 이미지 변환 엔드포인트
+app.use(express.static('public'));
+
 app.get('/api/convert-to-webp', async (req, res) => {
   try {
-    const imagePath = req.query.image; // 클라이언트에서 전달한 이미지 경로
+    const imageUrl = req.query.image;
 
-    // 이미지를 WebP로 변환
-    const webpImage = await sharp(imagePath)
-      .webp()
-      .toBuffer();
+    // 원격 이미지 다운로드
+    const response = await axios.get(imageUrl, { responseType: 'arraybuffer' });
 
-    // 변환된 이미지를 클라이언트에 응답으로 전송
-    res.type('webp').send(webpImage);
+    if (response.status === 200) {
+      // 다운로드한 이미지의 형식을 확인하여 JPEG이라면 WebP로 변환
+      if (response.headers['content-type'] === 'image/jpeg') {
+        const webpImage = await sharp(response.data)
+          .webp()
+          .toBuffer();
+
+        // 변환된 이미지를 클라이언트에 응답으로 전송
+        res.type('webp').send(webpImage);
+      } else {
+        // 이미지 형식이 지원되지 않는 경우 에러 응답
+        res.status(500).send('Unsupported image format');
+      }
+    } else {
+      // 이미지 다운로드 실패 시 에러 응답
+      res.status(500).send('Failed to download image');
+    }
   } catch (error) {
-    console.error(error);
+    console.error('Error during image conversion:', error);
     res.status(500).send('Internal Server Error');
   }
 });

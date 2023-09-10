@@ -58,6 +58,8 @@ const [webPImage, setWebPImage] = useState(null);
       try {
         // 이미지 변환 요청
         const response = await fetch(`/api/convert-to-webp?image=${post.image}`);
+        console.log(post.image);
+        
         if (response.ok) {
           // 변환된 이미지 데이터를 ArrayBuffer로 읽어옴
           const webPImageData = await response.arrayBuffer();
@@ -151,9 +153,16 @@ const [webPImage, setWebPImage] = useState(null);
                 <source type="image/jpeg" srcset={webPImage}/>
                 <source type="image/jpg" srcset={webPImage}/>
                 <source type="image/png" srcset={webPImage}/>
-                <img
-                  src={webPImage}
-                />
+                <img src={webPImage} alt="" />
+                {/* <img
+                  // ref={observeImage}
+                  data-src={webPImage} // 이미지 URL을 설정하세요
+                  // src={}
+                  alt={`${post.author.accountname}의 포스팅 이미지`}
+                  onError={(event) => {
+                    event.target.src = errorImg;
+                  }}
+                /> */}
               </picture>
             )}
           </Link>
