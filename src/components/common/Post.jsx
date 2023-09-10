@@ -57,13 +57,13 @@ const [webPImage, setWebPImage] = useState(null);
     async function convertToWebP() {
       try {
         // 이미지 변환 요청
-        const response = await fetch(`/api/convert-to-webp?image=${post.image}`);
-        console.log(post.image);
+        const response = await fetch(`http://localhost:3000/api/convert-to-webp?image=${post.image}`);
+        console.log(response);
         
         if (response.ok) {
           // 변환된 이미지 데이터를 ArrayBuffer로 읽어옴
           const webPImageData = await response.arrayBuffer();
-
+          
           // ArrayBuffer를 Blob으로 변환
           const webPImageBlob = new Blob([webPImageData], { type: 'image/webp' });
 
@@ -80,7 +80,7 @@ const [webPImage, setWebPImage] = useState(null);
 
       convertToWebP();
   
-  }, []);
+  }, [post.img]);
 
   const postLikeReq = async () => {
     await postLike(id);
