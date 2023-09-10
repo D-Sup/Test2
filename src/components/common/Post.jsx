@@ -32,23 +32,23 @@ export default function Post({ post }) {
   const { openModal, ModalComponent } = useModalControl();
   const { openAlert, AlertComponent } = useAlertControl();
   const id = post.id || post._id;
-  const observeImage = useRef(null)
+//   const observeImage = useRef(null)
 
-  useEffect(() => {
-    const observer = new IntersectionObserver(showImage, {threshold: 0.1}); //메인이미지 관찰
-    observer.observe(observeImage.current)
-  return () => {
-    observer.disconnect();}
-  },[])
+//   useEffect(() => {
+//     const observer = new IntersectionObserver(showImage, {threshold: 0.1}); //메인이미지 관찰
+//     observer.observe(observeImage.current)
+//   return () => {
+//     observer.disconnect();}
+//   },[])
 
-  const showImage = async([entry], observer) => {
-    if (!entry.isIntersecting) {
-      return
-    }
-    const imageUrl = [entry][0].target.dataset.src //보여진 리뷰의 인덱스
-    observeImage.current.src = imageUrl
-    observer.unobserve(entry.target) // 함수가 실행될 때, 관찰을 끝내기.
-}
+//   const showImage = async([entry], observer) => {
+//     if (!entry.isIntersecting) {
+//       return
+//     }
+//     const imageUrl = [entry][0].target.dataset.src //보여진 리뷰의 인덱스
+//     observeImage.current.src = imageUrl
+//     observer.unobserve(entry.target) // 함수가 실행될 때, 관찰을 끝내기.
+// }
 
   const postLikeReq = async () => {
     await postLike(id);
@@ -98,7 +98,7 @@ export default function Post({ post }) {
       ${originalDate.getDate()}일`;
     return formattedDate
   }
-
+  const outputImagePath = 'imgs/converted.webp'; // 변환된 이미지 경로
   return (
     <>
       <PostStyle>
@@ -118,21 +118,22 @@ export default function Post({ post }) {
             </div>
             {contentMore && post.image && (
 
-<picture>
-  <source type="image/webp" srcset={post.image}/>
-  <source type="image/jpeg" srcset={post.image}/>
-  <source type="image/jpg" srcset={post.image}/>
-  <source type="image/png" srcset={post.image}/>
-  <img
-    ref={observeImage}
-    data-src={post.image} // 이미지 URL을 설정하세요
-    // src={}
-    alt={`${post.author.accountname}의 포스팅 이미지`}
-    onError={(event) => {
-      event.target.src = errorImg;
-    }}
-  />
-</picture>
+// <picture>
+//   <source type="image/webp" srcset={post.image}/>
+//   <source type="image/jpeg" srcset={post.image}/>
+//   <source type="image/jpg" srcset={post.image}/>
+//   <source type="image/png" srcset={post.image}/>
+//   <img
+//     ref={observeImage}
+//     data-src={post.image} // 이미지 URL을 설정하세요
+//     // src={}
+//     alt={`${post.author.accountname}의 포스팅 이미지`}
+//     onError={(event) => {
+//       event.target.src = errorImg;
+//     }}
+//   />
+// </picture>
+<img src={outputImagePath} alt="" />
 
             )}
           </Link>
