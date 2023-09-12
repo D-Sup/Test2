@@ -33,23 +33,23 @@ export default function Post({ post }) {
   const { openAlert, AlertComponent } = useAlertControl();
   const id = post.id || post._id;
   const webpImg = useWebPImage(post.image)
-  // const observeImage = useRef(null)
+  const observeImage = useRef(null)
 
-  // useEffect(() => {
-  //   const observer = new IntersectionObserver(showImage, {threshold: 0.1}); //메인이미지 관찰
-  //   observer.observe(observeImage.current)
-  // return () => {
-  //   observer.disconnect();}
-  // },[])
+  useEffect(() => {
+    const observer = new IntersectionObserver(showImage, {threshold: 0.1}); //메인이미지 관찰
+    observer.observe(observeImage.current)
+  return () => {
+    observer.disconnect();}
+  },[])
 
-  // const showImage = async([entry], observer) => {
-  //   if (!entry.isIntersecting) {
-  //     return
-  //   }
-  //   const imageUrl = [entry][0].target.dataset.src //보여진 리뷰의 인덱스
-  //   observeImage.current.src = imageUrl
-  //   observer.unobserve(entry.target) // 함수가 실행될 때, 관찰을 끝내기.
-// }
+  const showImage = async([entry], observer) => {
+    if (!entry.isIntersecting) {
+      return
+    }
+    const imageUrl = [entry][0].target.dataset.src //보여진 리뷰의 인덱스
+    observeImage.current.src = imageUrl
+    observer.unobserve(entry.target) // 함수가 실행될 때, 관찰을 끝내기.
+}
 
 // const [webPImage, setWebPImage] = useState(null);
 
@@ -155,10 +155,10 @@ export default function Post({ post }) {
                 <source type="image/png" srcset={webpImg}/>
                 
                 <img
-                  // ref={observeImage}
+                  ref={observeImage}
                   data-src={webpImg} // 이미지 URL을 설정하세요
                   // src={}
-                  // alt={`${post.author.accountname}의 포스팅 이미지`}
+                  alt={`${post.author.accountname}의 포스팅 이미지`}
                   onError={(event) => {
                     event.target.src = errorImg;
                   }}
