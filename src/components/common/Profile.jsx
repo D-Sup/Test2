@@ -1,27 +1,32 @@
+import React from 'react';
 import styled, { css } from 'styled-components';
 
 import BasicProfile from '../../assets/img/basic-profile.svg';
+import useWebPImage from '../../hooks/useWebPImage';
 
-function getProfileSrc(url) {
+function getProfileSrc(url, webpImg) {
   if (!!url && typeof url === "string" && url.includes("https://") && url !== "http://146.56.183.55:5050/Ellipse.png") {
-    return url;
+    return webpImg;
   } else {
     return BasicProfile;
   }
 }
 
-export function ProfileLg({ url = false }) {
-  return <ProfileLgStyle src={url || BasicProfile} alt="" />
+function ProfileLg({ url = false }) {
+  const webpImg = useWebPImage(url);
+  return <ProfileLgStyle src={webpImg || BasicProfile} alt="" />
 }
 
-export function ProfileMd({ url = false }) {
-  return <ProfileMdStyle src={getProfileSrc(url)} alt="" />
+function ProfileMd({ url = false }) {
+  const webpImg = useWebPImage(url);
+  return <ProfileMdStyle src={getProfileSrc(url, webpImg)} alt="" />
 }
 
-export function ProfileSm({ url = false, confirm }) {
+function ProfileSm({ url = false, confirm }) {
+  const webpImg = useWebPImage(url);
   return (
     <ProfileContainer confirm={confirm}>
-      <ProfileSmStyle src={getProfileSrc(url)} alt="" />
+      <ProfileSmStyle src={getProfileSrc(url, webpImg)} alt="" />
     </ProfileContainer>
   );
 }
@@ -64,3 +69,5 @@ const ProfileSmStyle = styled.img`
   width: 40px;
   height: 40px;
 `;
+
+export { ProfileLg, ProfileMd, ProfileSm };

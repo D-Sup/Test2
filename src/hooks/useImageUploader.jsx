@@ -14,6 +14,8 @@ const useImageUploader = () => {
     if (allowedExtensions.includes(selectedExtension)) {
       const preImageURL = URL.createObjectURL(selectedFile);
       const preImagePath = await postImgFile(selectedFile);
+      console.log(preImageURL);
+      console.log(preImagePath);
       setImageURL(preImageURL);
       setImagePath(preImagePath);
     } else {

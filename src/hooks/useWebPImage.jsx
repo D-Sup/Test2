@@ -7,7 +7,7 @@ function useWebPImage( imagePath ) {
     async function convertToWebP() {
       try {
         // 이미지 변환 요청
-        const response = await fetch(`http://localhost:3000/api/convert-to-webp?image=${imagePath}`);
+        const response = await fetch(`https://node-webp-conversion-f95526f96ff4.herokuapp.com/api/convert-to-webp?image=${imagePath}`);
         
         if (response.ok) {
           // 변환된 이미지 데이터를 ArrayBuffer로 읽어옴

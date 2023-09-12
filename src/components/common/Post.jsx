@@ -7,7 +7,7 @@ import { deletePost, reportPost } from '../../api/postAPI';
 import useModalControl from '../../hooks/useModalControl';
 import useAlertControl from '../../hooks/useAlertControl';
 import styled, { keyframes } from 'styled-components';
-
+import useWebPImage from '../../hooks/useWebPImage';
 // import { sizify } from './img.helpers';
 // import { imgWidth2WSize } from './img.types';
 
@@ -32,55 +32,55 @@ export default function Post({ post }) {
   const { openModal, ModalComponent } = useModalControl();
   const { openAlert, AlertComponent } = useAlertControl();
   const id = post.id || post._id;
+  const webpImg = useWebPImage(post.image)
+  // const observeImage = useRef(null)
 
-//   const observeImage = useRef(null)
+  // useEffect(() => {
+  //   const observer = new IntersectionObserver(showImage, {threshold: 0.1}); //메인이미지 관찰
+  //   observer.observe(observeImage.current)
+  // return () => {
+  //   observer.disconnect();}
+  // },[])
 
-//   useEffect(() => {
-//     const observer = new IntersectionObserver(showImage, {threshold: 0.1}); //메인이미지 관찰
-//     observer.observe(observeImage.current)
-//   return () => {
-//     observer.disconnect();}
-//   },[])
-
-//   const showImage = async([entry], observer) => {
-//     if (!entry.isIntersecting) {
-//       return
-//     }
-//     const imageUrl = [entry][0].target.dataset.src //보여진 리뷰의 인덱스
-//     observeImage.current.src = imageUrl
-//     observer.unobserve(entry.target) // 함수가 실행될 때, 관찰을 끝내기.
+  // const showImage = async([entry], observer) => {
+  //   if (!entry.isIntersecting) {
+  //     return
+  //   }
+  //   const imageUrl = [entry][0].target.dataset.src //보여진 리뷰의 인덱스
+  //   observeImage.current.src = imageUrl
+  //   observer.unobserve(entry.target) // 함수가 실행될 때, 관찰을 끝내기.
 // }
 
-const [webPImage, setWebPImage] = useState(null);
+// const [webPImage, setWebPImage] = useState(null);
 
-  useEffect(() => {
-    async function convertToWebP() {
-      try {
-        // 이미지 변환 요청
-        const response = await fetch(`http://localhost:3000/api/convert-to-webp?image=${post.image}`);
-        console.log(response);
+//   useEffect(() => {
+//     async function convertToWebP() {
+//       try {
+//         // 이미지 변환 요청
+//         const response = await fetch(`https://node-webp-conversion-f95526f96ff4.herokuapp.com/api/convert-to-webp?image=${post.image}`);
+//         console.log(post.image);
         
-        if (response.ok) {
-          // 변환된 이미지 데이터를 ArrayBuffer로 읽어옴
-          const webPImageData = await response.arrayBuffer();
+//         if (response.ok) {
+//           // 변환된 이미지 데이터를 ArrayBuffer로 읽어옴
+//           const webPImageData = await response.arrayBuffer();
           
-          // ArrayBuffer를 Blob으로 변환
-          const webPImageBlob = new Blob([webPImageData], { type: 'image/webp' });
+//           // ArrayBuffer를 Blob으로 변환
+//           const webPImageBlob = new Blob([webPImageData], { type: 'image/webp' });
 
-          // Blob URL 생성
-          const webPImageUrl = URL.createObjectURL(webPImageBlob);
-          console.log(webPImageUrl);
-          // 변환된 이미지 URL을 상태로 저장
-          setWebPImage(webPImageUrl);
-        }
-      } catch (error) {
-        console.error('이미지 변환 중 오류 발생:', error);
-      }
-    }
+//           // Blob URL 생성
+//           const webPImageUrl = URL.createObjectURL(webPImageBlob);
+//           console.log(webPImageUrl);
+//           // 변환된 이미지 URL을 상태로 저장
+//           setWebPImage(webPImageUrl);
+//         }
+//       } catch (error) {
+//         console.error('이미지 변환 중 오류 발생:', error);
+//       }
+//     }
 
-      convertToWebP();
+//       convertToWebP();
   
-  }, [post.img]);
+//   }, [post.img]);
 
   const postLikeReq = async () => {
     await postLike(id);
@@ -149,20 +149,22 @@ const [webPImage, setWebPImage] = useState(null);
             </div>
             {contentMore && post.image && (
               <picture>
-                <source type="image/webp" srcset={webPImage}/>
-                <source type="image/jpeg" srcset={webPImage}/>
-                <source type="image/jpg" srcset={webPImage}/>
-                <source type="image/png" srcset={webPImage}/>
-                <img src={webPImage} alt="" />
-                {/* <img
+                <source type="image/webp" srcset={webpImg}/>
+                <source type="image/jpeg" srcset={webpImg}/>
+                <source type="image/jpg" srcset={webpImg}/>
+                <source type="image/png" srcset={webpImg}/>
+                
+                <img
                   // ref={observeImage}
-                  data-src={webPImage} // 이미지 URL을 설정하세요
+                  data-src={webpImg} // 이미지 URL을 설정하세요
                   // src={}
-                  alt={`${post.author.accountname}의 포스팅 이미지`}
+                  // alt={`${post.author.accountname}의 포스팅 이미지`}
                   onError={(event) => {
                     event.target.src = errorImg;
                   }}
-                /> */}
+                />
+
+
               </picture>
             )}
           </Link>
@@ -288,6 +290,11 @@ const PostContainerStyle = styled.div`
       background-color: var(--background-color);
       width: 0px;
     } 
+  }
+
+  picture {
+    width: 304px;
+    height: 228px;
   }
 
   img {

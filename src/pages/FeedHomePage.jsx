@@ -53,24 +53,24 @@ export default function FeedHomePage() {
   }, [location.pathname])
 
   
-  const firstMount = () => {
-    setTimeout(() => {
-      setLoading(false);
-    }, 1800);
-  }
+  // const firstMount = () => {
+  //   setTimeout(() => {
+  //     setLoading(false);
+  //   }, 1800);
+  // }
 
 
   const upDateFeed = async (value) => {
     if (location.pathname === '/feed') {
       const data = await getPost(value)
       setVisiblePost((PrevValue) => [...PrevValue, ...data.posts]);
-      initialMount ? firstMount() : setLoading(false)
+      setLoading(false)
       return data
     }
     else if (location.pathname === '/recommendfeed') {
       const data = await getPostAll(value)
       setVisiblePost((PrevValue) => [...PrevValue, ...data.posts]);
-      initialMount ? firstMount() : setLoading(false);
+      setLoading(false);
       return data;
     }
   }
